@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Used Car Price Service</title>
+</head>
+<body>
+    <h1>Used Car Price Service</h1>
+
+    <form id="carForm">
+        <label for="brand">Car Brand:</label><br>
+        <input type="text" id="brand" required><br><br>
+
+        <label for="model">Car Model:</label><br>
+        <input type="text" id="model" required><br><br>
+
+        <label for="year">Model Year:</label><br>
+        <input type="number" id="year" required><br><br>
+
+        <label for="milage">Milage (in miles):</label><br>
+        <input type="number" id="milage" required><br><br>
+
+        <label for="color">Exterior Color:</label><br>
+        <input type="text" id="color" required><br><br>
+
+        <label for="price">Price:</label><br>
+        <input type="number" id="price" required><br><br>
+
+        <label for="authToken">Authorization Token:</label><br>
+        <input type="text" id="authToken" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <pre id="result"></pre>
+
+    <script>
+        document.getElementById('carForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevents the default form submission behavior
+
+            // Collecting the data from the form
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const year = document.getElementById('year').value;
+            const milage = document.getElementById('milage').value;
+            const color = document.getElementById('color').value;
+            const price = document.getElementById('price').value;
+            const authToken = document.getElementById('authToken').value;
+
+            // Preparing the data in the format required by the API
+            const carData = [
+                {
+                    brand: brand,
+                    model: model,
+                    model_year: year,
+                    milage: milage,
+                    ext_col: color,
+                    price: price
+                }
+            ];
+
+            // API endpoint
+            const apiUrl = 'http://4.157.10.198:80/api/v1/service/usedcarpriceservice/score';
+
+            // Making the POST request using Fetch API
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`  // Including the authorization token in the header
+                },
+                body: JSON.stringify(carData)  // Converting the data to JSON format
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Displaying the result
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                // Handling errors
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
