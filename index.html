@@ -48,6 +48,11 @@
             const price = document.getElementById('price').value;
             const authToken = document.getElementById('authToken').value;
 
+            if (!authToken) {
+                document.getElementById('result').textContent = "Error: Authorization Token is required!";
+                return;
+            }
+
             // Preparing the data in the format required by the API
             const carData = [
                 {
@@ -72,7 +77,12 @@
                 },
                 body: JSON.stringify(carData)  // Converting the data to JSON format
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch: ' + response.status);
+                }
+                return response.json();
+            })
             .then(data => {
                 // Displaying the result
                 document.getElementById('result').textContent = JSON.stringify(data, null, 2);
